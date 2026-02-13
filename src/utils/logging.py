@@ -6,7 +6,7 @@ import sys
 import logging
 
 import coloredlogs
-from pythonjsonlogger import jsonlogger
+from pythonjsonlogger import json as jsonlogger
 
 from ..config import settings
 

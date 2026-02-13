@@ -5,7 +5,7 @@ Poetry script to run the services
 import uvicorn
 import argparse
 
-from ..src.config import settings
+from src.config import settings
 
 
 def api():
@@ -24,7 +24,6 @@ def api():
             host=settings.host,
             port=settings.port,
             reload=True,
-            workers=settings.workers,
         )
     else:
         uvicorn.run(

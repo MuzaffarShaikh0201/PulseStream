@@ -31,7 +31,7 @@ api-local:
 	poetry run api --local
 
 test:
-	poetry run pytest
+	poetry run pytest --no-cov
 
 test-cov:
-	poetry run pytest --cov=src --cov-report=term-missing --cov-report=html
+	poetry run pytest --cov-report=term-missing --cov-report=html

@@ -1,45 +1,8 @@
 """
-Tests for FastAPI application endpoints.
+Tests for FastAPI application (docs, OpenAPI).
 """
 
-import pytest
 from fastapi.testclient import TestClient
-
-
-class TestHealthEndpoint:
-    """Tests for /health endpoint."""
-
-    def test_health_returns_200(self, client: TestClient) -> None:
-        """Test health check returns 200 status."""
-        response = client.get("/health")
-        assert response.status_code == 200
-
-    def test_health_returns_healthy_status(self, client: TestClient) -> None:
-        """Test health check returns healthy status."""
-        response = client.get("/health")
-        data = response.json()
-        assert data["status"] == "healthy"
-        assert data["service"] == "PulseStream"
-        assert "version" in data
-        assert data["environment"] in ("development", "staging", "production")
-
-
-class TestRootEndpoint:
-    """Tests for / root endpoint."""
-
-    def test_root_returns_200(self, client: TestClient) -> None:
-        """Test root endpoint returns 200 status."""
-        response = client.get("/")
-        assert response.status_code == 200
-
-    def test_root_returns_service_info(self, client: TestClient) -> None:
-        """Test root endpoint returns service information."""
-        response = client.get("/")
-        data = response.json()
-        assert data["service"] == "PulseStream"
-        assert "version" in data
-        assert data["environment"] in ("development", "staging", "production")
-        assert "docs" in data
 
 
 class TestOpenAPIDocs:

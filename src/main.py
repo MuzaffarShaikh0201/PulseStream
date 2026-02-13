@@ -3,20 +3,20 @@ PulseStream - Main FastAPI application.
 High-performance event ingestion and processing platform.
 """
 
-import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
-from .utils.logging import setup_logging
+from .routes import misc_router
+from .utils.logging import setup_logging, get_logger
+from .custom_openapi import create_custom_openapi_generator
 
 
 # Setup logging
 setup_logging()
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @asynccontextmanager
@@ -54,7 +54,7 @@ async def lifespan(app: FastAPI):
 
     # Close database connection
     # TODO: Close PostgreSQL connection
-    logger.info("✓ PostgreSQL connection closed")
+    # logger.info("✓ PostgreSQL connection closed")
 
     logger.info("✓ PulseStream shutdown complete")
 
@@ -63,7 +63,10 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    description="High-performance event ingestion and processing platform",
+    description=(
+        "High-performance, event-driven backend platform for ingesting, processing, "
+        "and analyzing large-scale event data in real-time."
+    ),
     docs_url="/docs" if settings.is_development else None,
     redoc_url="/redoc" if settings.is_development else None,
     lifespan=lifespan,
@@ -79,48 +82,25 @@ app.add_middleware(
 )
 
 
-# Health check endpoint
-@app.get("/health", tags=["Health"])
-async def health_check(request: Request):
-    """
-    Health check endpoint.
-    Returns the health status of the application and its dependencies.
-    """
+# Add custom OpenAPI generator
+doc_tags_metadata = [
+    {
+        "name": "Misc",
+        "description": "Miscellaneous APIs like health check, root, etc. that are not related to any specific functionality.",
+    },
+]
 
-    logger.info("Health check endpoint called")
-
-    # Check Redis connection
-    # TODO: Check Redis connection
-
-    # Check database connection (simple query)
-    # TODO: Check database connection
-
-    logger.info("Health check endpoint completed")
-
-    return JSONResponse(
-        status_code=200,
-        content={
-            "status": "healthy",
-            "service": settings.app_name,
-            "version": settings.app_version,
-            "environment": settings.environment,
-        },
-    )
+app.openapi = create_custom_openapi_generator(
+    app=app,
+    env_config=settings,
+    docs_summary="PulseStream API Documentation",
+    docs_description=(
+        "High-performance, event-driven backend platform for ingesting, processing, "
+        "and analyzing large-scale event data in real-time."
+    ),
+    docs_tags_metadata=doc_tags_metadata,
+)
 
 
-@app.get("/", tags=["Root"])
-async def root(request: Request):
-    """Root endpoint with API information."""
-
-    logger.info("Root endpoint called")
-    logger.info("Root endpoint completed")
-
-    return {
-        "service": settings.app_name,
-        "version": settings.app_version,
-        "environment": settings.environment,
-        "docs": "/docs" if settings.is_development else "disabled",
-    }
-
-
-# Import and include routers
+# Include routers
+app.include_router(misc_router)

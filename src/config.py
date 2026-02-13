@@ -3,8 +3,8 @@ Configuration management for the Event Platform.
 Uses Pydantic Settings for type-safe configuration with environment variable support.
 """
 
-from functools import lru_cache
 from typing import Literal
+from functools import lru_cache
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     # Application Settings
     app_name: str = Field(default="PulseStream", description="Application name")
     app_version: str = Field(default="0.1.0", description="Application version")
+    base_url: str = Field(default="http://localhost:8000", description="Base URL")
+    support_email: str = Field(
+        default="support@pulsestream.com", description="Support email"
+    )
     environment: Literal["development", "staging", "production"] = Field(
         default="development", description="Application environment"
     )
