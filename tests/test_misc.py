@@ -5,7 +5,7 @@ Tests for misc routes (root, health endpoints).
 from fastapi.testclient import TestClient
 
 from src.config import settings
-from src.schemas.misc import Health200Response, Root200Response
+from src.models import Health200Response, Root200Response
 
 
 class TestHealthEndpoint:

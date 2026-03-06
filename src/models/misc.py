@@ -1,7 +1,9 @@
 """
-Request and response schemas for miscellaneous routes.
+Pydantic models for miscellaneous routes.
+These models are used for API request/response validation.
 """
 
+from typing import Dict
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -31,6 +33,10 @@ class Health200Response(BaseModel):
                 "service": "PulseStream",
                 "version": "0.1.0",
                 "environment": "development",
+                "dependencies": {
+                    "redis": "healthy",
+                    "database": "healthy",
+                },
             }
         }
     )
@@ -39,7 +45,4 @@ class Health200Response(BaseModel):
     service: str = Field(description="The name of the service.")
     version: str = Field(description="The version of the service.")
     environment: str = Field(description="The environment the service is running in.")
-
-
-ROOT_RESPONSE_MODEL = {200: {"model": Root200Response}}
-HEALTH_RESPONSE_MODEL = {200: {"model": Health200Response}}
+    dependencies: Dict[str, str] = Field(description="The dependencies of the service.")
