@@ -31,6 +31,10 @@ dev = [
 
 
 [tool.poetry]
+name = "pulsestream"
+version = "0.1.0"
+description = "High-performance, event-driven backend platform for real-time event processing"
+authors = ["MuzaffarShaikh0201 <muzaffarshaikh0201@gmail.com>"]
 packages = [{include = "src"}, {include = "scripts"}]
 
 
