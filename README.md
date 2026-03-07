@@ -144,3 +144,6 @@ make clean              # Remove cache and build artifacts
 ## 📝 License
 
 MIT License
+
+## 🖋️ Author
+- Muzaffar Shaikh - [muzaffarshaikh0201@gmail.com](mailto:"Muzaffar%20Shaikh"<muzaffarshaikh0201@gmail.com>)
