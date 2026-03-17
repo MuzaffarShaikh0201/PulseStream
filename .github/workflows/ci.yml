@@ -30,10 +30,12 @@ jobs:
           python -c "
           import json, os
           config = json.loads(os.environ['PULSESTREAM_CONFIG_JSON'])
-          with open(os.environ['GITHUB_ENV'], 'a') as f:
+          with open('.env', 'w') as envf:
             for k, v in config.items():
               val = str(v).replace(chr(10), ' ').replace(chr(13), '')
-              f.write(f'{k}={val}\n')
+              with open(os.environ['GITHUB_ENV'], 'a') as f:
+                f.write(f'{k}={val}\n')
+              envf.write(f'{k}={val}\n')
           "
 
       - name: Set up Python

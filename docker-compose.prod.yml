@@ -1,7 +1,5 @@
 # Production compose - uses pre-built image from Docker Hub
-# Set DOCKERHUB_IMAGE (e.g. username/pulsestream:latest) or DOCKERHUB_USERNAME
-
-version: "3.8"
+# Set DOCKERHUB_IMAGE (e.g. username/pulsestream:latest)
 
 services:
     postgres:
