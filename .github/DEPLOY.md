@@ -23,7 +23,7 @@
    curl -fsSL https://get.docker.com | sh
    sudo usermod -aG docker $USER
    # Log out and back in
-   sudo apt install docker-compose-plugin
+   sudo apt install docker-compose
    ```
 3. Create app directory:
    ```bash
