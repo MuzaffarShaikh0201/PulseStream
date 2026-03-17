@@ -40,6 +40,7 @@
    - `SSH_HOST` – Oracle instance public IP or hostname
    - `SSH_USER` – `ubuntu` (for Ubuntu instances)
    - `SSH_PRIVATE_KEY` – full contents of your private key
+   - `SSH_KEY_PASSPHRASE` – (optional) passphrase if your key is protected
 
 ### 4. Optional: App Directory
 
