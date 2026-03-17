@@ -60,12 +60,12 @@ jobs:
         run: poetry install --no-interaction
 
       - name: Start Postgres and Redis
-        run: docker-compose up -d postgres redis
+        run: docker compose up -d postgres redis
 
       - name: Wait for services
         run: |
-          until docker-compose exec -T postgres pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; do sleep 2; done
-          until docker-compose exec -T redis redis-cli ping; do sleep 2; done
+          until docker compose exec -T postgres pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; do sleep 2; done
+          until docker compose exec -T redis redis-cli ping; do sleep 2; done
 
       - name: Run migrations
         run: poetry run alembic upgrade head
