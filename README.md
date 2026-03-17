@@ -94,12 +94,12 @@ make test-cov
 
 ## 🔐 CI/CD (GitHub Actions + Bitwarden)
 
-CI runs on push/PR to `main` and `dev`. Secrets are pulled from **Bitwarden Secrets Manager**.
+- **CI**: Runs on push/PR to `main` and `dev`. Tests, builds the image, and pushes to Docker Hub on `main`/`dev`.
+- **CD**: Deploys to Oracle Cloud compute instance when CI succeeds on `main`.
 
-**Setup:** See [.github/BITWARDEN_SETUP.md](.github/BITWARDEN_SETUP.md) for:
-- Creating secrets in Bitwarden
-- Configuring `BW_ACCESS_TOKEN` in GitHub
-- Updating Secret IDs in the workflow
+**Setup:**
+- [.github/BITWARDEN_SETUP.md](.github/BITWARDEN_SETUP.md) – Bitwarden secrets for CI
+- [.github/DEPLOY.md](.github/DEPLOY.md) – Docker Hub and Oracle Cloud deployment
 
 ## 🏗️ Project Structure
 
@@ -146,4 +146,4 @@ make clean              # Remove cache and build artifacts
 MIT License
 
 ## 🖋️ Author
-- Muzaffar Shaikh - [muzaffarshaikh0201@gmail.com](mailto:"Muzaffar%20Shaikh"<muzaffarshaikh0201@gmail.com>)
+- Muzaffar Shaikh - [muzaffarshaikh0201@gmail.com](mailto:muzaffarshaikh0201@gmail.com)
