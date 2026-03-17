@@ -99,6 +99,6 @@ jobs:
             set -e
             mkdir -p "$APP_DIR"
             cd "$APP_DIR"
-            sg docker -c "docker-compose -f docker-compose.prod.yml pull"
-            sg docker -c "docker-compose -f docker-compose.prod.yml up -d"
+            sg docker -c "docker compose -f docker-compose.prod.yml pull"
+            sg docker -c "docker compose -f docker-compose.prod.yml up -d"
             sg docker -c "docker image prune --force"
