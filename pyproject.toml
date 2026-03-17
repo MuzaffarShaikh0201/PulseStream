@@ -1,0 +1,67 @@
+[project]
+name = "pulsestream"
+version = "0.1.0"
+description = "High-performance, event-driven backend platform for real-time event processing"
+authors = [
+    {name = "MuzaffarShaikh0201",email = "muzaffarshaikh0201@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard] (>=0.129.0,<0.130.0)",
+    "coloredlogs (>=15.0.1,<16.0.0)",
+    "pydantic-settings (>=2.12.0,<3.0.0)",
+    "python-json-logger (>=4.0.0,<5.0.0)",
+    "sqlalchemy (>=2.0.47,<3.0.0)",
+    "redis (>=7.2.1,<8.0.0)",
+    "asyncpg (>=0.31.0,<0.32.0)",
+    "psycopg2-binary (>=2.9.11,<3.0.0)",
+    "alembic (>=1.18.4,<2.0.0)",
+    "email-validator (>=2.3.0,<3.0.0)"
+]
+
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.0.2,<10.0.0)",
+    "pytest-asyncio (>=1.3.0,<2.0.0)",
+    "pytest-cov (>=7.0.0,<8.0.0)"
+]
+
+
+[tool.poetry]
+name = "pulsestream"
+version = "0.1.0"
+description = "High-performance, event-driven backend platform for real-time event processing"
+authors = ["MuzaffarShaikh0201 <muzaffarshaikh0201@gmail.com>"]
+packages = [{include = "src"}, {include = "scripts"}]
+
+
+[tool.poetry.scripts]
+api = "scripts.cli:api"
+worker = "scripts.cli:worker"
+
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --tb=short --cov=src --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = ["tests/*", "**/__init__.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
