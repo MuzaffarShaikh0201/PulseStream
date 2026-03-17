@@ -1,7 +1,7 @@
 # CD - Deploy to Oracle Cloud compute instance
 # Required GitHub secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
-# Optional: SSH_KEY_PASSPHRASE (if your private key is passphrase-protected)
-# Optional GitHub variable: APP_DIR (e.g. ~/pulsestream) - deploy path on Oracle instance
+# Optional: SSH_KEY_PASSPHRASE (if private key is passphrase-protected)
+# Optional GitHub variable: APP_DIR (default /home/{SSH_USER}/pulsestream)
 # On Oracle instance: Docker, docker-compose, .env, and docker-compose.prod.yml
 
 name: CD
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     env:
-      APP_DIR: ${{ vars.APP_DIR || '~/pulsestream' }}
+      APP_DIR: ${{ vars.APP_DIR || format('/home/{0}/pulsestream', secrets.SSH_USER) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -71,8 +71,8 @@ jobs:
           envs: APP_DIR,DOCKERHUB_IMAGE
           script: |
             set -e
-            mkdir -p $APP_DIR
-            cd $APP_DIR
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d
+            mkdir -p "$APP_DIR"
+            cd "$APP_DIR"
+            docker-compose -f docker-compose.prod.yml pull
+            docker-compose -f docker-compose.prod.yml up -d
             docker image prune --force
