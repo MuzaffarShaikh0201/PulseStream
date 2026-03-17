@@ -45,6 +45,9 @@ jobs:
           target: ${{ env.APP_DIR }}
 
       - name: Docker login on Oracle Cloud
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -52,12 +55,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
           envs: DOCKERHUB_USERNAME,DOCKERHUB_TOKEN
-          env: |
-            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
-            DOCKERHUB_TOKEN=${{ secrets.DOCKERHUB_TOKEN }}
-          script: echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+          request_pty: true
+          script: |
+            echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
       - name: Deploy to Oracle Cloud
+        env:
+          DOCKERHUB_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/pulsestream:latest
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -65,13 +69,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
           envs: APP_DIR,DOCKERHUB_IMAGE
-          env: |
-            DOCKERHUB_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/pulsestream:latest
           script: |
             set -e
             mkdir -p $APP_DIR
             cd $APP_DIR
-            export DOCKERHUB_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/pulsestream:latest
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d
             docker image prune -f
