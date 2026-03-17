@@ -8,6 +8,8 @@ All environment variables must come from Bitwarden. No defaults are used anywher
 - **BW_SECRET_ID_CONFIG**: Stored in GitHub Secrets (UUID of the pulsestream-config secret)
 - **pulsestream-config**: Single Bitwarden secret containing a JSON object with all env vars
 
+Used by **CI** (tests) and **CD** (deploy). For CD, use production values (e.g. `ENVIRONMENT=production`, prod DB password). CD overrides `POSTGRES_HOST` and `REDIS_HOST` to `postgres`/`redis` for Docker networking.
+
 ## Step 1: Create the Config Secret in Bitwarden
 
 1. Go to [Bitwarden Secrets Manager](https://bitwarden.com/products/secrets-manager/)

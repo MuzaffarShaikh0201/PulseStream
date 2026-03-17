@@ -15,6 +15,14 @@
    - `DOCKERHUB_USERNAME` – your Docker Hub username
    - `DOCKERHUB_TOKEN` – your Docker Hub access token (Settings → Security → New Access Token)
 
+### 1b. Bitwarden (for .env)
+
+CD fetches config from Bitwarden and deploys `.env` automatically. Add GitHub secrets (see `.github/BITWARDEN_SETUP.md`):
+- `BW_ACCESS_TOKEN` – Bitwarden machine account token
+- `BW_SECRET_ID_CONFIG` – UUID of the `pulsestream-config` secret
+
+Use production values in Bitwarden (e.g. `ENVIRONMENT=production`, prod DB password).
+
 ### 2. Oracle Cloud Compute Instance (Ubuntu)
 
 1. Create an Ubuntu VM on Oracle Cloud
@@ -22,15 +30,19 @@
    ```bash
    curl -fsSL https://get.docker.com | sh
    sudo usermod -aG docker $USER
-   # Log out and back in
+   # Log out and back in (or reboot) so the docker group takes effect
    sudo apt install docker-compose
+   sudo systemctl enable docker && sudo systemctl start docker
    ```
-3. Create app directory (replace `ubuntu` with your SSH_USER if different):
+3. Ensure the SSH user is in the `docker` group (CD runs non-interactively; `sg docker` is used so Docker commands work):
+   ```bash
+   groups $USER   # should include docker
+   ```
+4. Create app directory (replace `ubuntu` with your SSH_USER if different):
    ```bash
    mkdir -p /home/ubuntu/pulsestream && cd /home/ubuntu/pulsestream
    ```
-4. Create `.env` with all config (from Bitwarden or your secrets)
-5. Ensure `docker-compose.prod.yml` is present (CD copies it on each deploy)
+5. `docker-compose.prod.yml` and `.env` are copied by CD on each deploy (`.env` is generated from Bitwarden)
 
 ### 3. SSH Access
 
@@ -52,12 +64,16 @@ APP_DIR defaults to `/home/{SSH_USER}/pulsestream`. To override, add a GitHub va
 
 ```bash
 cd /home/ubuntu/pulsestream   # or /home/$SSH_USER/pulsestream
-# Create .env (copy from Bitwarden or .env.example)
-# docker-compose.prod.yml is copied by CD; for first run, clone the repo or copy it manually
-export DOCKERHUB_IMAGE=YOUR_USERNAME/pulsestream:latest
-docker-compose -f docker-compose.prod.yml pull
-docker-compose -f docker-compose.prod.yml up -d
+
+# 1. Ensure Docker is running and your user is in the docker group
+sudo systemctl status docker
+groups $USER   # should include docker
+
+# 2. Create the app directory (CD will copy docker-compose.prod.yml and .env on deploy)
+mkdir -p /home/ubuntu/pulsestream
 ```
+
+No manual `.env` creation needed – CD pulls config from Bitwarden and deploys it automatically.
 
 ## Private Docker Hub Images
 

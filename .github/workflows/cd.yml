@@ -1,10 +1,13 @@
 # CD - Deploy to Oracle Cloud compute instance
-# Required GitHub secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
+# Required GitHub secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, BW_ACCESS_TOKEN, BW_SECRET_ID_CONFIG
 # Optional: SSH_KEY_PASSPHRASE (if private key is passphrase-protected)
 # Optional GitHub variable: APP_DIR (default /home/{SSH_USER}/pulsestream)
-# On Oracle instance: Docker, docker-compose, .env, and docker-compose.prod.yml
+# On Oracle instance: Docker, docker-compose, docker-compose.prod.yml (.env is deployed from Bitwarden)
 
 name: CD
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 on:
   workflow_run:
@@ -24,6 +27,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Fetch config from Bitwarden
+        uses: bitwarden/sm-action@v2
+        with:
+          access_token: ${{ secrets.BW_ACCESS_TOKEN }}
+          secrets: |
+            ${{ secrets.BW_SECRET_ID_CONFIG }} > PULSESTREAM_CONFIG_JSON
+
+      - name: Export config as .env
+        env:
+          DOCKERHUB_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/pulsestream:latest
+        run: |
+          python -c "
+          import json, os
+          config = json.loads(os.environ['PULSESTREAM_CONFIG_JSON'])
+          config['DOCKERHUB_IMAGE'] = os.environ['DOCKERHUB_IMAGE']
+          config['POSTGRES_HOST'] = 'postgres'
+          config['REDIS_HOST'] = 'redis'
+          with open('.env', 'w') as f:
+            for k, v in config.items():
+              val = str(v).replace(chr(10), ' ').replace(chr(13), '')
+              f.write(f'{k}={val}\n')
+          "
+
       - name: Ensure app directory exists on Oracle Cloud
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -34,14 +60,14 @@ jobs:
           envs: APP_DIR
           script: mkdir -p $APP_DIR
 
-      - name: Copy docker-compose.prod.yml to Oracle Cloud
+      - name: Copy docker-compose.prod.yml and .env to Oracle Cloud
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
-          source: "docker-compose.prod.yml"
+          source: "docker-compose.prod.yml,.env"
           target: ${{ env.APP_DIR }}
 
       - name: Docker login on Oracle Cloud
@@ -73,6 +99,6 @@ jobs:
             set -e
             mkdir -p "$APP_DIR"
             cd "$APP_DIR"
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d
-            docker image prune --force
+            sg docker -c "docker-compose -f docker-compose.prod.yml pull"
+            sg docker -c "docker-compose -f docker-compose.prod.yml up -d"
+            sg docker -c "docker image prune --force"
