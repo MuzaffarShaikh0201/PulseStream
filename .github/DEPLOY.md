@@ -25,9 +25,9 @@
    # Log out and back in
    sudo apt install docker-compose
    ```
-3. Create app directory:
+3. Create app directory (replace `ubuntu` with your SSH_USER if different):
    ```bash
-   mkdir -p ~/pulsestream && cd ~/pulsestream
+   mkdir -p /home/ubuntu/pulsestream && cd /home/ubuntu/pulsestream
    ```
 4. Create `.env` with all config (from Bitwarden or your secrets)
 5. Ensure `docker-compose.prod.yml` is present (CD copies it on each deploy)
@@ -44,19 +44,19 @@
 
 ### 4. Optional: App Directory
 
-If your deploy path is not `~/pulsestream`, add a GitHub variable:
+APP_DIR defaults to `/home/{SSH_USER}/pulsestream`. To override, add a GitHub variable:
 - **Name**: `APP_DIR`
-- **Value**: e.g. `~/myapp` or `/opt/pulsestream`
+- **Value**: e.g. `/home/ubuntu/myapp` or `/opt/pulsestream` (use absolute path)
 
 ## First-Time Setup on Oracle Instance
 
 ```bash
-cd ~/pulsestream
+cd /home/ubuntu/pulsestream   # or /home/$SSH_USER/pulsestream
 # Create .env (copy from Bitwarden or .env.example)
 # docker-compose.prod.yml is copied by CD; for first run, clone the repo or copy it manually
 export DOCKERHUB_IMAGE=YOUR_USERNAME/pulsestream:latest
-docker compose -f docker-compose.prod.yml pull
-docker compose -f docker-compose.prod.yml up -d
+docker-compose -f docker-compose.prod.yml pull
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ## Private Docker Hub Images
