@@ -1,5 +1,6 @@
 # CD - Deploy to Oracle Cloud compute instance
 # Required GitHub secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
+# Optional: SSH_KEY_PASSPHRASE (if your private key is passphrase-protected)
 # Optional GitHub variable: APP_DIR (e.g. ~/pulsestream) - deploy path on Oracle instance
 # On Oracle instance: Docker, docker-compose, .env, and docker-compose.prod.yml
 
@@ -29,6 +30,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
           envs: APP_DIR
           script: mkdir -p $APP_DIR
 
@@ -38,6 +40,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
           source: "docker-compose.prod.yml"
           target: ${{ env.APP_DIR }}
 
@@ -47,6 +50,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
           envs: DOCKERHUB_USERNAME,DOCKERHUB_TOKEN
           env: |
             DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
@@ -59,6 +63,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
           envs: APP_DIR,DOCKERHUB_IMAGE
           env: |
             DOCKERHUB_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/pulsestream:latest
