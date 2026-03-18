@@ -75,8 +75,8 @@ app = FastAPI(
         "High-performance, event-driven backend platform for ingesting, processing, "
         "and analyzing large-scale event data in real-time."
     ),
-    docs_url="/docs" if settings.is_development else None,
-    redoc_url="/redoc" if settings.is_development else None,
+    docs_url="/docs",
+    redoc_url="/redoc",
     lifespan=lifespan,
 )
 
