@@ -126,9 +126,15 @@ class TestAggregationWorkerRun:
         """Test run_aggregations calls 1min, hourly, and daily aggregators."""
         worker = AggregationWorker()
         with (
-            patch.object(worker, "_aggregate_one_minute", new_callable=AsyncMock) as mock_1min,
-            patch.object(worker, "_aggregate_hourly", new_callable=AsyncMock) as mock_hourly,
-            patch.object(worker, "_aggregate_daily", new_callable=AsyncMock) as mock_daily,
+            patch.object(
+                worker, "_aggregate_one_minute", new_callable=AsyncMock
+            ) as mock_1min,
+            patch.object(
+                worker, "_aggregate_hourly", new_callable=AsyncMock
+            ) as mock_hourly,
+            patch.object(
+                worker, "_aggregate_daily", new_callable=AsyncMock
+            ) as mock_daily,
         ):
             await worker.run_aggregations()
             mock_1min.assert_called_once()
@@ -139,7 +145,9 @@ class TestAggregationWorkerRun:
         """Test run_aggregations handles exceptions gracefully."""
         worker = AggregationWorker()
         with patch.object(
-            worker, "_aggregate_one_minute", new_callable=AsyncMock, side_effect=Exception("DB error")
+            worker,
+            "_aggregate_one_minute",
+            new_callable=AsyncMock,
+            side_effect=Exception("DB error"),
         ):
-            # Should not raise - exceptions are caught and logged
             await worker.run_aggregations()

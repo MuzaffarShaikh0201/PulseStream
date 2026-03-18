@@ -123,9 +123,6 @@ class EventBatchResponse(BaseModel):
     event_ids: list[UUID]
 
 
-# Specific event models for different categories
-
-
 class UserRegisteredEvent(EventCreate):
     """User registration event."""
 

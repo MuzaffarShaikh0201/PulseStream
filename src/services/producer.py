@@ -199,5 +199,4 @@ class EventProducer:
         )
 
 
-# Global producer instance
 event_producer = EventProducer()

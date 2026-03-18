@@ -22,8 +22,6 @@ class APIKeyManager:
     """
 
     def __init__(self):
-        # In production, load from database
-        # For now, use environment variable or generate default keys
         self._api_keys = self._load_api_keys()
 
     def _load_api_keys(self) -> dict[str, dict]:
@@ -87,7 +85,6 @@ class APIKeyManager:
         return permission in key_data.get("permissions", [])
 
 
-# Global API key manager
 api_key_manager = APIKeyManager()
 
 

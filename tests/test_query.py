@@ -25,9 +25,7 @@ class TestQueryEvents:
         response = client.get("/events", headers=user_headers)
         assert response.status_code == 200
 
-    def test_query_returns_list(
-        self, client: TestClient, user_headers: dict
-    ) -> None:
+    def test_query_returns_list(self, client: TestClient, user_headers: dict) -> None:
         """Test query events returns a list."""
         response = client.get("/events", headers=user_headers)
         data = response.json()
