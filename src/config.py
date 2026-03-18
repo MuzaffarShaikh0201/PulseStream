@@ -149,5 +149,4 @@ def get_settings() -> Settings:
     return Settings()
 
 
-# Export settings instance
 settings = get_settings()

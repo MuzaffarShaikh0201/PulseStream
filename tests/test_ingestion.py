@@ -117,9 +117,7 @@ class TestIngestBatchEvents:
                 {**_valid_event_payload(), "event_type": "activity.click"},
             ]
         }
-        response = client.post(
-            "/events/batch", json=payload, headers=user_headers
-        )
+        response = client.post("/events/batch", json=payload, headers=user_headers)
         assert response.status_code == 202
 
     def test_batch_returns_valid_schema(
@@ -127,9 +125,7 @@ class TestIngestBatchEvents:
     ) -> None:
         """Test batch response matches EventBatchResponse schema."""
         payload = {"events": [_valid_event_payload()]}
-        response = client.post(
-            "/events/batch", json=payload, headers=user_headers
-        )
+        response = client.post("/events/batch", json=payload, headers=user_headers)
         data = response.json()
         EventBatchResponse.model_validate(data)
         assert data["accepted"] == 1
@@ -141,9 +137,7 @@ class TestIngestBatchEvents:
     ) -> None:
         """Test batch ingest rejects empty events list."""
         payload = {"events": []}
-        response = client.post(
-            "/events/batch", json=payload, headers=user_headers
-        )
+        response = client.post("/events/batch", json=payload, headers=user_headers)
         assert response.status_code == 422
 
     def test_batch_multiple_events(
@@ -153,13 +147,24 @@ class TestIngestBatchEvents:
         payload = {
             "events": [
                 {**_valid_event_payload(), "event_type": "user.login", "user_id": "u1"},
-                {**_valid_event_payload(), "event_type": "activity.search", "user_id": "u2"},
-                {**_valid_event_payload(), "event_type": "transaction.created", "user_id": "u3", "properties": {"transaction_id": "tx1", "amount": 10, "currency": "USD"}},
+                {
+                    **_valid_event_payload(),
+                    "event_type": "activity.search",
+                    "user_id": "u2",
+                },
+                {
+                    **_valid_event_payload(),
+                    "event_type": "transaction.created",
+                    "user_id": "u3",
+                    "properties": {
+                        "transaction_id": "tx1",
+                        "amount": 10,
+                        "currency": "USD",
+                    },
+                },
             ]
         }
-        response = client.post(
-            "/events/batch", json=payload, headers=user_headers
-        )
+        response = client.post("/events/batch", json=payload, headers=user_headers)
         assert response.status_code == 202
         data = response.json()
         assert data["accepted"] == 3

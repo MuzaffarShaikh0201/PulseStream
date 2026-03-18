@@ -441,7 +441,6 @@ class EnhancedOpenAPIGenerator:
                     )
                     operation["x-code-samples"] = samples
                 except Exception as e:
-                    # Log error but don't fail the entire schema generation
                     print(
                         f"Warning: Failed to generate code samples for {method.upper()} {path}: {e}"
                     )
@@ -454,24 +453,7 @@ class EnhancedOpenAPIGenerator:
         if "securitySchemes" not in schema["components"]:
             schema["components"]["securitySchemes"] = {}
 
-        # Add common security schemes if not already defined
         security_schemes = schema["components"]["securitySchemes"]
-
-        # if "bearerAuth" not in security_schemes:
-        #     security_schemes["bearerAuth"] = {
-        #         "type": "http",
-        #         "scheme": "bearer",
-        #         "bearerFormat": "JWT",
-        #         "description": "Enter your bearer token in the format: Bearer <token>",
-        #     }
-
-        if "apiKey" not in security_schemes:
-            security_schemes["apiKey"] = {
-                "type": "apiKey",
-                "in": "header",
-                "name": "X-API-Key",
-                "description": "API key for authentication",
-            }
 
 
 def create_custom_openapi_generator(
@@ -512,22 +494,3 @@ def create_custom_openapi_generator(
     )
 
     return generator.generate_schema
-
-
-# Usage example:
-"""
-from fastapi import FastAPI
-
-app = FastAPI()
-
-# Configure your custom OpenAPI
-app.openapi = create_custom_openapi_generator(
-    app=app,
-    env_config=env_config,
-    docs_summary="Your API Summary",
-    docs_description="Your detailed API description",
-    docs_tags_metadata=your_tags_metadata,
-    logo_url="https://your-logo-url.com/logo.png",  # Optional
-    custom_tag_groups=your_custom_tag_groups  # Optional
-)
-"""

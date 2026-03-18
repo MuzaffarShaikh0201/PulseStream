@@ -101,4 +101,5 @@ jobs:
             cd "$APP_DIR"
             sg docker -c "docker compose -f docker-compose.prod.yml pull"
             sg docker -c "docker compose -f docker-compose.prod.yml up -d"
-            sg docker -c "docker image prune --force"
+            sg docker -c "docker container prune -f"
+            sg docker -c "docker image prune -a -f"

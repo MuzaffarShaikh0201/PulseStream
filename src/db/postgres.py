@@ -30,8 +30,8 @@ class DatabaseManager:
             echo=settings.debug,
             pool_size=settings.postgres_pool_size,
             max_overflow=settings.postgres_max_overflow,
-            pool_pre_ping=True,  # Verify connections before using
-            pool_recycle=3600,  # Recycle connections after 1 hour
+            pool_pre_ping=True,
+            pool_recycle=3600,
         )
 
         self._session_factory = async_sessionmaker(
@@ -86,7 +86,6 @@ class DatabaseManager:
         return self._engine
 
 
-# Global database manager instance
 db_manager = DatabaseManager()
 
 

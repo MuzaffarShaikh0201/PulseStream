@@ -20,7 +20,6 @@ class TestHealthEndpoint:
         """Test health check returns healthy status and matches schema."""
         response = client.get("/health")
         data = response.json()
-        # Validate response matches Health200Response schema
         Health200Response.model_validate(data)
         assert data["status"] == "healthy"
         assert data["service"] == settings.app_name
@@ -40,7 +39,6 @@ class TestRootEndpoint:
         """Test root endpoint returns service information and matches schema."""
         response = client.get("/")
         data = response.json()
-        # Validate response matches Root200Response schema
         Root200Response.model_validate(data)
         assert data["service"] == settings.app_name
         assert "version" in data

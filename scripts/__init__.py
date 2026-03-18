@@ -2,7 +2,7 @@
 PulseStream - CLI scripts for PulseStream application
 """
 
-from .cli import api
+from .cli import api, worker
 
 
-__all__ = ["api"]
+__all__ = ["api", "worker"]

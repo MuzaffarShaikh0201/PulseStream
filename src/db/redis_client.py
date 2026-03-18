@@ -27,7 +27,6 @@ class RedisManager:
             max_connections=settings.redis_pool_size,
         )
 
-        # Initialize consumer groups for all streams
         await self._init_consumer_groups()
 
     async def close(self) -> None:
@@ -49,8 +48,6 @@ class RedisManager:
 
         for stream_key in streams:
             try:
-                # Try to create consumer group
-                # MKSTREAM creates the stream if it doesn't exist
                 await self._client.xgroup_create(
                     name=stream_key,
                     groupname=settings.redis_consumer_group,
@@ -58,7 +55,6 @@ class RedisManager:
                     mkstream=True,
                 )
             except RedisError as e:
-                # Group already exists, which is fine
                 if "BUSYGROUP" not in str(e):
                     raise
 
@@ -214,5 +210,4 @@ class RedisManager:
         return await self.client.xinfo_consumers(stream_key, groupname)
 
 
-# Global Redis manager instance
 redis_manager = RedisManager()

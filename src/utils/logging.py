@@ -14,15 +14,12 @@ from ..config import settings
 def setup_logging() -> None:
     """Configure application logging."""
 
-    # Create logger
     logger = logging.getLogger()
     logger.setLevel(getattr(logging, settings.log_level))
 
-    # Remove existing handlers
     logger.handlers.clear()
 
     if settings.is_production:
-        # JSON format for production
         handler = logging.StreamHandler(sys.stdout)
         formatter = jsonlogger.JsonFormatter(
             fmt="%(asctime)s %(name)s %(levelname)s %(message)s",
@@ -31,7 +28,6 @@ def setup_logging() -> None:
         handler.setFormatter(formatter)
         logger.addHandler(handler)
     else:
-        # Colored human-readable format for development
         coloredlogs.install(
             level=getattr(logging, settings.log_level),
             fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -51,7 +47,6 @@ def setup_logging() -> None:
             ),
         )
 
-    # Set specific log levels for noisy libraries
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
     logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
 

@@ -17,7 +17,9 @@ class TestAdminStatsEndpoint:
         response = client.get("/stats")
         assert response.status_code == 401
 
-    def test_stats_rejects_user_key(self, client: TestClient, user_headers: dict) -> None:
+    def test_stats_rejects_user_key(
+        self, client: TestClient, user_headers: dict
+    ) -> None:
         """Test stats endpoint returns 403 with user key (requires admin)."""
         response = client.get("/stats", headers=user_headers)
         assert response.status_code == 403
